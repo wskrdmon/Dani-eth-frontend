@@ -1,14 +1,18 @@
 // src/components/layout/Sidebar.tsx
 import React from 'react';
 
+// 1. Agregamos isOpen a las propiedades
 interface SidebarProps {
   activeView: string;
   setActiveView: (view: string) => void;
+  isOpen: boolean; 
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
+// 2. Recibimos isOpen en los parámetros
+export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen }) => {
   return (
-    <div className="sidebar">
+    // 3. LA MAGIA: Si isOpen es true, le inyecta la clase "open"
+    <div className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="logo">
         <h1>🛡️ Dani-ETH</h1>
       </div>
@@ -68,6 +72,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) =
         <div className="nav-icon">⚙️</div>
         Settings
       </div>
+      
+      <div style={{ marginTop: 'auto', padding: '20px', textAlign: 'center', color: '#8b92a8', fontSize: '12px' }}>
+        v1.0.0
+      </div>
+
     </div>
   );
 };

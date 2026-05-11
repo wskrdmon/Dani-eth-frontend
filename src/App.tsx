@@ -15,6 +15,10 @@ import React, { useState } from 'react';
 
 const DaniETH = () => {
   const [activeView, setActiveView] = useState('dashboard');
+  
+  // ---> ESTADO NUEVO: Controla si el menú lateral está abierto en celulares <---
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+
   const [vulnDrawerOpen, setVulnDrawerOpen] = useState(false);
   const [selectedVuln, setSelectedVuln] = useState(null);
   const [aiAnalyticsOpen, setAiAnalyticsOpen] = useState(false);
@@ -73,46 +77,66 @@ const DaniETH = () => {
   return (
     <div style={{ margin: 0, padding: 0, boxSizing: 'border-box' }}>
       
-      
-      {/* Sidebar importado */}
-        <Sidebar activeView={activeView} setActiveView={setActiveView} />
+      {/* ---> NUEVO: OVERLAY OSCURO PARA CELULARES <--- */}
+      <div 
+        className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`}
+        onClick={() => setIsSidebarOpen(false)}
+      ></div>
 
-
+      {/* ---> ACTUALIZADO: Sidebar ahora recibe isOpen <--- */}
+      <Sidebar 
+        activeView={activeView} 
+        setActiveView={(view) => {
+          setActiveView(view);
+          setIsSidebarOpen(false); // Cierra el menú al seleccionar una opción
+        }} 
+        isOpen={isSidebarOpen}
+      />
 
       {/* Main Container */}
       <div className="main-container">
-        <Header activeView={activeView} />
+        
+        {/* ---> ACTUALIZADO: Header ahora recibe toggleSidebar <--- */}
+        <Header 
+          activeView={activeView} 
+          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        />
 
         {/* Content */}
-        <div className="content">
+        <div className="content fade-in-view" key={activeView}>
+          
           {/* Dashboard View */}
-        {activeView === 'dashboard' && <Dashboard openVulnDrawer={openVulnDrawer} />}
+          {activeView === 'dashboard' && <Dashboard openVulnDrawer={openVulnDrawer} />}
+          
           {/* Vulnerability Hub View */}
           {activeView === 'vulnerability' && (
-        <VulnerabilityHub 
-          vulnTab={vulnTab} 
-         setVulnTab={setVulnTab} 
-          showToast={showToast} 
-        openVulnDrawer={openVulnDrawer} 
+            <VulnerabilityHub
+              vulnTab={vulnTab}
+              setVulnTab={setVulnTab}
+              showToast={showToast}
+              openVulnDrawer={openVulnDrawer}
             />
           )}
+
           {/* AI Pentesting View */}
           {activeView === 'ai-pentesting' && <AIPentesting showToast={showToast} />}
-          {/* Patch Management View - COMPLETED */}
+
+          {/* Patch Management View */}
           {activeView === 'patch' && (
-  <PatchManagement 
-    patchTab={patchTab} 
-    setPatchTab={setPatchTab} 
-    showToast={showToast} 
-    openReassignModal={openReassignModal} 
-  />
-)}
+            <PatchManagement 
+              patchTab={patchTab}
+              setPatchTab={setPatchTab}
+              showToast={showToast}
+              openReassignModal={openReassignModal}
+            />
+          )}
          
           {/* Team & Assets View - NEW */}
           {activeView === 'team' && <Team teamTab={teamTab} setTeamTab={setTeamTab} />}
 
           {/* Reports View - NEW */}
           {activeView === 'reports' && <Reports showToast={showToast} />}
+          
           {/* Settings View */}
           {activeView === 'settings' && <Settings showToast={showToast} />}
         </div>
@@ -120,19 +144,21 @@ const DaniETH = () => {
 
       {/* Vulnerability Drawer - CLEANED UP */}
       <VulnDrawer 
-       vulnDrawerOpen={vulnDrawerOpen} 
-      closeVulnDrawer={closeVulnDrawer} 
-      selectedVuln={selectedVuln} 
-      showToast={showToast} 
-/>
+        vulnDrawerOpen={vulnDrawerOpen} 
+        closeVulnDrawer={closeVulnDrawer} 
+        selectedVuln={selectedVuln} 
+        showToast={showToast} 
+      />
+      
       {/* Reassign Modal */}
-     <ReassignModal 
-    reassignModalOpen={reassignModalOpen} 
-    closeReassignModal={closeReassignModal} 
-    selectedAssignee={selectedAssignee} 
-    setSelectedAssignee={setSelectedAssignee} 
-    confirmReassign={confirmReassign} 
-/>
+      <ReassignModal 
+        reassignModalOpen={reassignModalOpen} 
+        closeReassignModal={closeReassignModal} 
+        selectedAssignee={selectedAssignee} 
+        setSelectedAssignee={setSelectedAssignee} 
+        confirmReassign={confirmReassign} 
+      />
+      
       {/* Toast Notification */}
       {toastMessage && (
         <div className="toast">
