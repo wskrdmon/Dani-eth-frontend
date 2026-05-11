@@ -106,7 +106,12 @@ const DaniETH = () => {
         <div className="content fade-in-view" key={activeView}>
           
           {/* Dashboard View */}
-          {activeView === 'dashboard' && <Dashboard openVulnDrawer={openVulnDrawer} />}
+          {activeView === 'dashboard' && (
+            <Dashboard openVulnDrawer={openVulnDrawer}
+            goToview={setActiveView}
+            setVulnTab={setVulnTab} 
+            />
+          )}
           
           {/* Vulnerability Hub View */}
           {activeView === 'vulnerability' && (
